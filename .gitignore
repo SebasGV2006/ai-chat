@@ -1,0 +1,16 @@
+node_modules
+.pnp
+.pnp.js
+.next
+.turbo
+dist
+out
+.env
+.env.local
+.env.production
+*.db
+*.db-shm
+*.db-wal
+.DS_Store
+Thumbs.db
+*.log
