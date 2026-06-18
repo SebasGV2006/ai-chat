@@ -17,7 +17,9 @@ export async function auth() {
 
 export async function signOut() {
   // server action helper used by server components
-  await fetch("/api/auth/logout", { method: "POST" });
+  const base = process.env.NEXTAUTH_URL || `http://localhost:${process.env.PORT || 3000}`;
+  const url = new URL("/api/auth/logout", base).toString();
+  await fetch(url, { method: "POST" });
   return { ok: true };
 }
 

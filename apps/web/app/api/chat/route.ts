@@ -17,7 +17,7 @@ const bodySchema = z.object({
       z.object({ role: z.enum(["user", "assistant", "system"]), content: z.string().min(1) })
     )
     .min(1),
-  model: z.enum(["gemini-2.5-flash", "gemini-2.5-flash-lite-preview-06-17"]),
+  model: z.enum(["gemini-2.5-flash", "gemini-2.0-flash-lite"]),
   conversationId: z.string().nullable(),
 });
 

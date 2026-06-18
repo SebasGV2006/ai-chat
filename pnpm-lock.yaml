@@ -33,52 +33,52 @@ importers:
         specifier: ^1.0.0
         version: 1.2.22(zod@3.25.76)
       '@libsql/client':
-        specifier: ^0.6.0
+        specifier: ^0.6.2
         version: 0.6.2
       ai:
-        specifier: ^4.0.0
+        specifier: ^4.3.19
         version: 4.3.19(react@18.3.1)(zod@3.25.76)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
       class-variance-authority:
-        specifier: ^0.7.0
+        specifier: ^0.7.1
         version: 0.7.1
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
       drizzle-orm:
-        specifier: ^0.31.0
+        specifier: ^0.31.4
         version: 0.31.4(@libsql/client@0.6.2)(@opentelemetry/api@1.9.0)(@types/react@18.3.31)(react@18.3.1)
       iron-session:
         specifier: ^8.0.4
         version: 8.0.4
       jsonwebtoken:
-        specifier: ^9.0.0
+        specifier: ^9.0.3
         version: 9.0.3
       lucide-react:
         specifier: ^0.400.0
         version: 0.400.0(react@18.3.1)
       next:
-        specifier: ^14.2.0
+        specifier: ^14.2.35
         version: 14.2.35(@opentelemetry/api@1.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
-        specifier: ^18.3.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.3.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       tailwind-merge:
-        specifier: ^2.3.0
+        specifier: ^2.6.1
         version: 2.6.1
       uuid:
-        specifier: ^9.0.0
+        specifier: ^9.0.1
         version: 9.0.1
       zod:
-        specifier: ^3.23.0
+        specifier: ^3.25.76
         version: 3.25.76
     devDependencies:
       '@types/bcryptjs':
@@ -88,19 +88,19 @@ importers:
         specifier: ^9.0.10
         version: 9.0.10
       '@types/node':
-        specifier: ^20.0.0
+        specifier: ^20.19.43
         version: 20.19.43
       '@types/react':
-        specifier: ^18.3.0
+        specifier: ^18.3.31
         version: 18.3.31
       '@types/react-dom':
-        specifier: ^18.3.0
+        specifier: ^18.3.7
         version: 18.3.7(@types/react@18.3.31)
       autoprefixer:
-        specifier: ^10.4.0
+        specifier: ^10.5.0
         version: 10.5.0(postcss@8.5.15)
       drizzle-kit:
-        specifier: ^0.22.0
+        specifier: ^0.22.8
         version: 0.22.8
       eslint:
         specifier: ^8.0.0
