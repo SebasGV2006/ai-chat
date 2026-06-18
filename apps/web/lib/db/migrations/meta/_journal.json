@@ -8,6 +8,13 @@
       "when": 1781752437849,
       "tag": "0000_vengeful_brood",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1781763641329,
+      "tag": "0001_slimy_cobalt_man",
+      "breakpoints": true
     }
   ]
 }

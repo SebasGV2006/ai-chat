@@ -1,10 +1,9 @@
 import { NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { v4 as uuidv4 } from "uuid";
+import { eq } from "drizzle-orm";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { eq } from "drizzle-orm";
 
 const TOKEN_NAME = "__token";
 
@@ -17,25 +16,23 @@ function createCookie(token: string) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, password } = body;
-    if (!email || !password) return new Response(JSON.stringify({ error: "Missing fields" }), { status: 400 });
+    const { email, password } = body;
+    if (!email || !password) return new Response(JSON.stringify({ error: "Missing credentials" }), { status: 400 });
 
-    const existing = await db.query.users.findFirst({ where: eq(users.email, email) });
-    if (existing) return new Response(JSON.stringify({ error: "Email already registered" }), { status: 409 });
+    const user = await db.query.users.findFirst({ where: eq(users.email, email) });
+    if (!user) return new Response(JSON.stringify({ error: "Invalid credentials" }), { status: 401 });
 
-    const hash = bcryptjs.hashSync(password, 10);
-    const id = uuidv4();
-    await db.insert(users).values({ id, name: name ?? null, email, passwordHash: hash }).run();
+    const matches = bcryptjs.compareSync(password, user.passwordHash);
+    if (!matches) return new Response(JSON.stringify({ error: "Invalid credentials" }), { status: 401 });
 
-    // create jwt cookie
-    const payload = { id, email, name };
+    const payload = { id: user.id, email: user.email, name: user.name };
     const token = jwt.sign(payload, process.env.NEXTAUTH_SECRET || "dev-secret-change-this", { expiresIn: "7d" });
+
     const headers = new Headers();
     headers.append("Set-Cookie", createCookie(token));
-    return new Response(JSON.stringify({ ok: true }), { status: 201, headers });
+    return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.stack || err.message : String(err);
     return new Response(JSON.stringify({ error: message }), { status: 500 });
   }
 }
-
