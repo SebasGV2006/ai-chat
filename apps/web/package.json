@@ -12,9 +12,9 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "@ai-chat/ai-core": "workspace:*",
-    "@ai-chat/types": "workspace:*",
-    "@ai-chat/ui": "workspace:*",
+    "@ai-chat/ai-core": "*",
+    "@ai-chat/types": "*",
+    "@ai-chat/ui": "*",
     "next": "^14.2.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",

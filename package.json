@@ -1,6 +1,7 @@
 {
   "name": "ai-chat",
   "private": true,
+  "packageManager": "npm@9.0.0",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -15,8 +16,10 @@
     "@types/node": "^20.0.0"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=9.0.0"
+    "node": ">=20.0.0"
   },
-  "packageManager": "pnpm@9.0.0"
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
 }
