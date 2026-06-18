@@ -1,23 +1,25 @@
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { randomUUID } from "crypto";
 import { sql } from "drizzle-orm";
 
 export const users = sqliteTable("users", {
-  id: text("id").primaryKey(),
-  email: text("email").notNull().unique(),
+  id: text("id").primaryKey().$defaultFn(() => randomUUID()),
   name: text("name"),
+  email: text("email").notNull().unique(),
+  // map JS property `passwordHash` to DB column `password_hash`
   passwordHash: text("password_hash").notNull(),
+  // map JS property `createdAt` to DB column `created_at`
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .default(sql`(unixepoch())`),
 });
 
 export const sessions = sqliteTable("sessions", {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
+  sessionToken: text("sessionToken").notNull().primaryKey(),
+  userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  sessionToken: text("session_token").notNull().unique(),
-  expires: integer("expires", { mode: "timestamp" }).notNull(),
+  expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
 });
 
 export const conversations = sqliteTable("conversations", {
