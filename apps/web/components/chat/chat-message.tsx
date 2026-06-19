@@ -1,7 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { User, BotMessageSquare } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 interface ChatMessageProps {
   role: "user" | "assistant" | "system";
@@ -13,28 +12,21 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
 
   if (role === "user") {
     return (
-      <div className="flex flex-row-reverse gap-3 py-3">
-        <Avatar className="h-8 w-8 shrink-0 bg-primary text-primary-foreground">
-          <AvatarFallback className="bg-primary text-primary-foreground">
-            <User className="h-4 w-4" />
-          </AvatarFallback>
-        </Avatar>
-        <div className="max-w-[75%] bg-primary text-primary-foreground rounded-lg px-4 py-2">
-          <p className="text-sm whitespace-pre-wrap leading-relaxed">{content}</p>
+      <div className="flex justify-end px-4 py-1.5 message-enter">
+        <div className="max-w-[70%] rounded-2xl rounded-tr-sm px-4 py-2.5 bg-primary text-primary-foreground text-sm leading-relaxed shadow-sm">
+          <p className="whitespace-pre-wrap">{content}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-row gap-3 py-3">
-      <Avatar className="h-8 w-8 shrink-0 bg-muted text-muted-foreground">
-        <AvatarFallback className="bg-muted text-muted-foreground">
-          <BotMessageSquare className="h-4 w-4" />
-        </AvatarFallback>
-      </Avatar>
-      <div className="max-w-[75%] bg-muted text-foreground rounded-lg px-4 py-2">
-        <p className="text-sm whitespace-pre-wrap leading-relaxed">{content}</p>
+    <div className="flex items-start gap-3 px-4 py-1.5 message-enter">
+      <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20">
+        <Sparkles className="h-3.5 w-3.5 text-primary" />
+      </div>
+      <div className="max-w-[70%] rounded-2xl rounded-tl-sm px-4 py-2.5 bg-muted/60 text-foreground text-sm leading-relaxed">
+        <p className="whitespace-pre-wrap">{content}</p>
       </div>
     </div>
   );
