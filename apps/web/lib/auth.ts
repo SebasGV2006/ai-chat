@@ -1,15 +1,21 @@
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 
 const TOKEN_NAME = "authjs.session-token";
 
-export async function auth() {
-  // server-side helper used in server components
+interface AuthUser extends JwtPayload {
+  id: string;
+  email: string;
+  name?: string | null;
+}
+
+export async function auth(): Promise<{ user: AuthUser } | null> {
   try {
     const token = cookies().get(TOKEN_NAME)?.value;
     if (!token) return null;
     const payload = jwt.verify(token, process.env.NEXTAUTH_SECRET || "dev-secret-change-this");
-    return { user: payload };
+    if (typeof payload === "string" || !payload || typeof payload !== "object") return null;
+    return { user: payload as AuthUser };
   } catch {
     return null;
   }

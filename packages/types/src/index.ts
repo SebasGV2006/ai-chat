@@ -1,7 +1,7 @@
 // Los dos modelos gratuitos de Gemini disponibles en Google AI Studio
 export type AIModel =
   | "gemini-2.5-flash"
-  | "gemini-2.0-flash-lite";
+  | "gemini-2.5-flash-lite-preview-06-17";
 
 export type MessageRole = "system" | "user" | "assistant";
 
@@ -40,18 +40,11 @@ export interface ConversationWithMessages extends Conversation {
 }
 
 // Metadata de los modelos para mostrar en la UI
-export const AI_MODELS: Record<
-  AIModel,
-  { label: string; description: string; speed: "fast" | "fastest" }
-> = {
+export const AI_MODELS: Record<AIModel, { label: string }> = {
   "gemini-2.5-flash": {
     label: "Gemini 2.5 Flash",
-    description: "Equilibrio velocidad/calidad · 10 RPM gratis",
-    speed: "fast",
   },
-  "gemini-2.0-flash-lite": {
-    label: "Gemini Flash-Lite",
-    description: "Máxima velocidad · 15 RPM gratis",
-    speed: "fastest",
+  "gemini-2.5-flash-lite-preview-06-17": {
+    label: "Gemini 2.5 Flash-Lite",
   },
 };

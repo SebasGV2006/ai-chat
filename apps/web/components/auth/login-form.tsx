@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLang } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ export function LoginForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { t } = useLang();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -27,7 +29,7 @@ export function LoginForm() {
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
-        setError("Email o contraseña incorrectos / Incorrect email or password");
+        setError(t("wrongCredentials"));
       } else {
         router.push("/chat");
       }
@@ -37,18 +39,20 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="max-w-sm w-full">
+    <Card className="w-full max-w-sm shadow-lg border-border/60">
       <CardHeader className="flex flex-col items-center gap-3">
-        <BotMessageSquare className="h-8 w-8 text-primary" />
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 mb-2">
+          <BotMessageSquare className="h-6 w-6 text-primary" />
+        </div>
         <div className="text-center">
-          <CardTitle>Iniciar sesión / Sign in</CardTitle>
-          <CardDescription>Bienvenido de vuelta / Welcome back</CardDescription>
+          <CardTitle>{t("login")}</CardTitle>
+          <CardDescription>{t("welcomeSubtitle")}</CardDescription>
         </div>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("email")}</Label>
             <Input
               id="email"
               type="email"
@@ -59,7 +63,7 @@ export function LoginForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Contraseña / Password</Label>
+            <Label htmlFor="password">{t("password")}</Label>
             <Input
               id="password"
               type="password"
@@ -71,7 +75,7 @@ export function LoginForm() {
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Iniciando sesión..." : "Iniciar sesión / Sign in"}
+            {isLoading ? t("signingIn") : t("login")}
           </Button>
         </form>
       </CardContent>

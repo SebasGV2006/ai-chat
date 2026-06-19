@@ -8,7 +8,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 
 interface ModelSelectorProps {
   value: AIModel;
@@ -18,21 +17,17 @@ interface ModelSelectorProps {
 export function ModelSelector({ value, onChange }: ModelSelectorProps) {
   return (
     <Select value={value} onValueChange={(v) => onChange(v as AIModel)}>
-      <SelectTrigger className="w-[260px]">
+      <SelectTrigger className="h-8 w-[180px] text-xs border-border/50 bg-transparent hover:bg-accent transition-colors">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {Object.entries(AI_MODELS).map(([key, model]) => (
-          <SelectItem key={key} value={key as AIModel}>
-            <div className="flex items-center gap-2">
-              <span className="font-semibold">{model.label}</span>
-              <Badge className="bg-green-600/20 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs">
-                Gratis / Free
-              </Badge>
-              <span className="text-xs text-muted-foreground ml-1">{model.description}</span>
-            </div>
-          </SelectItem>
-        ))}
+        {(Object.entries(AI_MODELS) as [AIModel, { label: string }][]).map(
+          ([modelId, { label }]) => (
+            <SelectItem key={modelId} value={modelId} className="text-sm">
+              {label}
+            </SelectItem>
+          )
+        )}
       </SelectContent>
     </Select>
   );

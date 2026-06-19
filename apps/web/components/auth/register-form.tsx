@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLang } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,17 +17,18 @@ export function RegisterForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { t } = useLang();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
 
     if (password.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres / Password must be at least 6 characters");
+      setError("La contraseña debe tener al menos 6 caracteres");
       return;
     }
     if (password !== confirmPassword) {
-      setError("Las contraseñas no coinciden / Passwords don't match");
+      setError("Las contraseñas no coinciden");
       return;
     }
 
@@ -41,11 +43,10 @@ export function RegisterForm() {
 
       if (!response.ok) {
         const data = await response.json();
-        setError(data.error ?? "Error al registrarse / Registration error");
+        setError(data.error ?? "Error al registrarse");
         return;
       }
 
-      // auto-login after register
       const loginRes = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -54,7 +55,7 @@ export function RegisterForm() {
       if (loginRes.ok) {
         router.push("/chat");
       } else {
-        setError("Error al iniciar sesión después del registro / Error signing in after registration");
+        setError("Error al iniciar sesión después del registro");
       }
     } finally {
       setIsLoading(false);
@@ -62,18 +63,20 @@ export function RegisterForm() {
   }
 
   return (
-    <Card className="max-w-sm w-full">
+    <Card className="w-full max-w-sm shadow-lg border-border/60">
       <CardHeader className="flex flex-col items-center gap-3">
-        <BotMessageSquare className="h-8 w-8 text-primary" />
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 mb-2">
+          <BotMessageSquare className="h-6 w-6 text-primary" />
+        </div>
         <div className="text-center">
-          <CardTitle>Crear cuenta / Create account</CardTitle>
-          <CardDescription>Únete a nuestro chat / Join our chat</CardDescription>
+          <CardTitle>{t("register")}</CardTitle>
+          <CardDescription>{t("signUp")}</CardDescription>
         </div>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Nombre / Name</Label>
+            <Label htmlFor="name">{t("name")}</Label>
             <Input
               id="name"
               type="text"
@@ -84,7 +87,7 @@ export function RegisterForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t("email")}</Label>
             <Input
               id="email"
               type="email"
@@ -95,7 +98,7 @@ export function RegisterForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Contraseña / Password</Label>
+            <Label htmlFor="password">{t("password")}</Label>
             <Input
               id="password"
               type="password"
@@ -106,7 +109,7 @@ export function RegisterForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirmar contraseña / Confirm password</Label>
+            <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
             <Input
               id="confirmPassword"
               type="password"
@@ -118,7 +121,7 @@ export function RegisterForm() {
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Creando cuenta..." : "Crear cuenta / Create account"}
+            {isLoading ? t("creatingAccount") : t("register")}
           </Button>
         </form>
       </CardContent>

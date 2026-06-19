@@ -27,24 +27,28 @@ export function ChatInput({
   }
 
   return (
-    <div className="flex items-end gap-2 p-4 border-t bg-background">
-      <Textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder={placeholder}
-        rows={1}
-        className="min-h-[44px] max-h-[200px] resize-none flex-1"
-        disabled={isLoading}
-      />
-      <Button
-        size="icon"
-        onClick={onSubmit}
-        disabled={isLoading || !value.trim()}
-        className="h-11 w-11 shrink-0"
-      >
-        <Send className="h-4 w-4" />
-      </Button>
+    <div className="w-full px-4 md:px-8 py-4 bg-background flex justify-center">
+      <div className="w-full max-w-4xl">
+        <div className="flex items-end gap-2 rounded-2xl border border-border/60 bg-muted/30 px-4 py-2.5 shadow-sm focus-within:border-primary/40 focus-within:ring-1 focus-within:ring-primary/20 transition-all">
+          <Textarea
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            rows={1}
+            className="min-h-[24px] max-h-[160px] resize-none flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/60 py-0.5"
+            disabled={isLoading}
+          />
+          <Button
+            size="icon"
+            onClick={onSubmit}
+            disabled={isLoading || !value.trim()}
+            className="h-8 w-8 rounded-xl shrink-0 mb-0.5"
+          >
+            <Send className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
