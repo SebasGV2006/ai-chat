@@ -17,13 +17,14 @@ const bodySchema = z.object({
       z.object({ role: z.enum(["user", "assistant", "system"]), content: z.string().min(1) })
     )
     .min(1),
-  model: z.enum(["gemini-2.5-flash", "gemini-2.5-flash-lite-preview-06-17"]),
+  model: z.enum(["gemini-2.5-flash", "gemini-2.0-flash-lite"]),
   conversationId: z.string().nullable(),
 });
 
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user) return new Response("Unauthorized", { status: 401 });
+  const userId = (session.user as Record<string, unknown>).id as string;
 
   const body = await req.json();
   const parsed = bodySchema.safeParse(body);
@@ -35,15 +36,15 @@ export async function POST(req: Request) {
 
   let convId: string;
 
-  if (!parsed.data.conversationId) {
+    if (!parsed.data.conversationId) {
     const title = lastMessage.content.slice(0, 60);
     const id = randomUUID();
-    await db.insert(conversations).values({ id, userId: session.user.id, title, model });
+    await db.insert(conversations).values({ id, userId, title, model });
     convId = id;
   } else {
     const conversationId = parsed.data.conversationId;
     const conv = await db.query.conversations.findFirst({
-      where: and(eq(conversations.id, conversationId), eq(conversations.userId, session.user.id)),
+      where: and(eq(conversations.id, conversationId), eq(conversations.userId, userId)),
     });
     if (!conv) return new Response("Forbidden", { status: 403 });
     convId = conversationId;
@@ -79,13 +80,14 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   const session = await auth();
   if (!session?.user) return new Response("Unauthorized", { status: 401 });
+  const userId = (session.user as Record<string, unknown>).id as string;
 
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
 
   if (id) {
     const conv = await db.query.conversations.findFirst({
-      where: and(eq(conversations.id, id), eq(conversations.userId, session.user.id)),
+      where: and(eq(conversations.id, id), eq(conversations.userId, userId)),
     });
     if (!conv) return new Response("Not found", { status: 404 });
 
@@ -94,7 +96,7 @@ export async function GET(req: Request) {
     return new Response(JSON.stringify(msgs), { headers: { "content-type": "application/json" } });
   }
 
-  const convs = await db.query.conversations.findMany({ where: eq(conversations.userId, session.user.id) });
+  const convs = await db.query.conversations.findMany({ where: eq(conversations.userId, userId) });
   convs.sort((a, b) => Number(b.updatedAt) - Number(a.updatedAt));
   return new Response(JSON.stringify(convs), { headers: { "content-type": "application/json" } });
 }

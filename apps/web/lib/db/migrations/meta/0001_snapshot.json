@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "059aca07-430c-4ef5-9f4b-d7c58546e998",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "17a239e7-acdb-43c4-8da2-359bcfc9e141",
+  "prevId": "9974dc9f-b30c-41e6-a173-a2a5f571a0e0",
   "tables": {
     "conversations": {
       "name": "conversations",
@@ -200,15 +200,29 @@
           "notNull": true,
           "autoincrement": false
         },
-        "password_hash": {
-          "name": "password_hash",
+        "emailVerified": {
+          "name": "emailVerified",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "passwordHash": {
+          "name": "passwordHash",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { conversations, messages } from "@/lib/db/schema";
-import { eq, and, asc } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { ChatInterface } from "@/components/chat/chat-interface";
 
 interface ChatPageProps {

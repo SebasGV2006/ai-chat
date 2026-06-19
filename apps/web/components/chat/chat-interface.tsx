@@ -70,8 +70,8 @@ export function ChatInterface({ conversationId, initialMessages }: ChatInterface
       </ScrollArea>
       <ChatInput
         value={input}
-        onChange={(v) => handleInputChange({ target: { value: v } } as any)}
-        onSubmit={handleSubmit as any}
+        onChange={(v) => handleInputChange({ target: { value: v } } as unknown as React.ChangeEvent<HTMLTextAreaElement>)}
+        onSubmit={() => handleSubmit()}
         isLoading={isLoading}
       />
     </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,8 +45,13 @@ export function RegisterForm() {
         return;
       }
 
-      const result = await signIn("credentials", { email, password, redirect: false });
-      if (result?.ok) {
+      // auto-login after register
+      const loginRes = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (loginRes.ok) {
         router.push("/chat");
       } else {
         setError("Error al iniciar sesión después del registro / Error signing in after registration");

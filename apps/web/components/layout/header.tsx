@@ -6,7 +6,7 @@ import { BotMessageSquare } from "lucide-react";
 
 async function handleSignOut() {
   "use server";
-  await signOut({ redirectTo: "/login" });
+  await signOut();
 }
 
 export async function Header() {

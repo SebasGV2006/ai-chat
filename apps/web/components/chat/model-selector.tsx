@@ -25,7 +25,7 @@ export function ModelSelector({ value, onChange }: ModelSelectorProps) {
         {Object.entries(AI_MODELS).map(([key, model]) => (
           <SelectItem key={key} value={key as AIModel}>
             <div className="flex items-center gap-2">
-              <span className="font-semibold">{model.name}</span>
+              <span className="font-semibold">{model.label}</span>
               <Badge className="bg-green-600/20 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs">
                 Gratis / Free
               </Badge>

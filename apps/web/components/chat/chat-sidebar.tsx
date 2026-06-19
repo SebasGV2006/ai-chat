@@ -26,12 +26,12 @@ export function ChatSidebar() {
   return (
     <aside className="flex h-full w-64 flex-col border-r bg-muted/30">
       <div className="p-4">
-        <Button asChild variant="outline" className="w-full">
-          <Link href="/chat" className="flex items-center gap-2">
+        <Link href="/chat" className="w-full">
+          <Button variant="outline" className="w-full justify-center">
             <Plus className="h-4 w-4" />
             Nueva conversación / New chat
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       </div>
       <ScrollArea className="flex-1">
         {isLoading ? (
