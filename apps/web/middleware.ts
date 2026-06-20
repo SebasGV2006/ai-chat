@@ -1,31 +1,34 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export default auth((req) => {
-  const isLoggedIn = !!req.auth?.user;
-  const { pathname } = req.nextUrl;
+export async function middleware(request: NextRequest) {
+  const session = await auth();
+  const isLoggedIn = !!session?.user;
+  const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/api/auth")) return NextResponse.next();
+
   if (pathname.startsWith("/api/")) {
     if (!isLoggedIn)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     return NextResponse.next();
   }
+
   if (
     !isLoggedIn &&
     !pathname.startsWith("/login") &&
     !pathname.startsWith("/register")
   ) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
-  if (
-    isLoggedIn &&
-    (pathname === "/login" || pathname === "/register")
-  ) {
-    return NextResponse.redirect(new URL("/chat", req.url));
+
+  if (isLoggedIn && (pathname === "/login" || pathname === "/register")) {
+    return NextResponse.redirect(new URL("/chat", request.url));
   }
+
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: [
