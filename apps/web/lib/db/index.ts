@@ -1,11 +1,15 @@
 import { drizzle } from "drizzle-orm/libsql";
-import { createClient } from "@libsql/client/http";
+import { createClient } from "@libsql/client";
 import * as schema from "./schema";
 
-const client = createClient({
-  url: process.env.DATABASE_URL ?? "file:./dev.db",
-  authToken: process.env.DATABASE_AUTH_TOKEN,
-});
+const url = process.env.DATABASE_URL ?? "file:./dev.db";
+const authToken = process.env.DATABASE_AUTH_TOKEN;
+
+const client = createClient(
+  authToken
+    ? { url, authToken }
+    : { url }
+);
 
 export const db = drizzle(client, { schema });
 export type DB = typeof db;
