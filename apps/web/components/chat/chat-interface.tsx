@@ -47,37 +47,39 @@ export function ChatInterface({ conversationId, initialMessages }: ChatInterface
         <h2 className="text-xs font-medium text-muted-foreground/70 uppercase tracking-wider">
           {currentConvId ? t("activeChat") : t("newChat")}
         </h2>
-        <ModelSelector value={model} onChange={setModel} />
+        <ModelSelector
+          value={model}
+          onChange={setModel}
+          className="h-8 w-[160px] md:w-[180px] text-xs"
+        />
       </div>
       <ScrollArea className="flex-1 w-full">
-        <div className="w-full px-4 md:px-8 py-4 flex justify-center">
-          <div className="w-full max-w-4xl">
-            {messages.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center gap-4 py-20">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20">
-                  <Sparkles className="h-7 w-7 text-primary" />
-                </div>
-                <div className="text-center">
-                  <p className="text-lg font-semibold">{t("welcomeTitle")}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{t("welcomeSubtitle")}</p>
-                </div>
+        <div className="mx-auto w-full max-w-3xl py-4 px-2 md:px-0">
+          {messages.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center gap-4 py-20">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20">
+                <Sparkles className="h-7 w-7 text-primary" />
               </div>
-            ) : (
-              <>
-                {messages
-                  .filter((m) => m.role !== "system")
-                  .map((m) => (
-                    <ChatMessage
-                      key={m.id}
-                      role={m.role as "user" | "assistant"}
-                      content={m.content}
-                    />
-                  ))}
-                {isLoading && <TypingIndicator />}
-              </>
-            )}
-            <div ref={bottomRef} />
-          </div>
+              <div className="text-center">
+                <p className="text-lg font-semibold">{t("welcomeTitle")}</p>
+                <p className="text-sm text-muted-foreground mt-1">{t("welcomeSubtitle")}</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              {messages
+                .filter((m) => m.role !== "system")
+                .map((m) => (
+                  <ChatMessage
+                    key={m.id}
+                    role={m.role as "user" | "assistant"}
+                    content={m.content}
+                  />
+                ))}
+              {isLoading && <TypingIndicator />}
+            </>
+          )}
+          <div ref={bottomRef} />
         </div>
       </ScrollArea>
       <div className="shrink-0 border-t border-border/40 bg-background/80 backdrop-blur-sm">

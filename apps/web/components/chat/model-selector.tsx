@@ -12,12 +12,13 @@ import {
 interface ModelSelectorProps {
   value: AIModel;
   onChange: (model: AIModel) => void;
+  className?: string;
 }
 
-export function ModelSelector({ value, onChange }: ModelSelectorProps) {
+export function ModelSelector({ value, onChange, className }: ModelSelectorProps) {
   return (
     <Select value={value} onValueChange={(v) => onChange(v as AIModel)}>
-      <SelectTrigger className="h-8 w-[180px] text-xs border-border/50 bg-transparent hover:bg-accent transition-colors">
+      <SelectTrigger className={className ?? "h-8 w-[180px] text-xs border-border/50 bg-transparent hover:bg-accent transition-colors"}>
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
