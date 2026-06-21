@@ -1,41 +1,34 @@
-import { NextRequest } from "next/server";
-import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
-import { randomUUID } from "crypto";
-import bcryptjs from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { registerUser } from "@/lib/auth-helpers";
 
-const TOKEN_NAME = "authjs.session-token";
+const schema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  password: z.string().min(6),
+});
 
-function createCookie(token: string) {
-  const secure = process.env.NODE_ENV === "production";
-  const maxAge = 60 * 60 * 24 * 7; // 7 days
-  return `${TOKEN_NAME}=${encodeURIComponent(token)}; HttpOnly; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure ? "; Secure" : ""}`;
-}
-
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, password } = body;
-    if (!email || !password) return new Response(JSON.stringify({ error: "Missing fields" }), { status: 400 });
+    const parsed = schema.safeParse(body);
 
-    const existing = await db.query.users.findFirst({ where: eq(users.email, email) });
-    if (existing) return new Response(JSON.stringify({ error: "Email already registered" }), { status: 409 });
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.errors[0]?.message ?? "Datos inválidos" },
+        { status: 400 }
+      );
+    }
 
-    const hash = bcryptjs.hashSync(password, 10);
-    const id = randomUUID();
-    await db.insert(users).values({ id, name: name ?? null, email, passwordHash: hash }).run();
+    const { name, email, password } = parsed.data;
+    await registerUser(email, password, name);
 
-    // create jwt cookie
-    const payload = { id, email, name };
-    const token = jwt.sign(payload, process.env.NEXTAUTH_SECRET || "dev-secret-change-this", { expiresIn: "7d" });
-    const headers = new Headers();
-    headers.append("Set-Cookie", createCookie(token));
-    return new Response(JSON.stringify({ ok: true }), { status: 201, headers });
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.stack || err.message : String(err);
-    return new Response(JSON.stringify({ error: message }), { status: 500 });
+    return NextResponse.json({ success: true }, { status: 201 });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Error interno del servidor";
+    const status = message.includes("ya está registrado") ? 409 : 500;
+    return NextResponse.json({ error: message }, { status });
   }
 }
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { useLang } from "@/components/providers/language-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,12 +24,13 @@ export function LoginForm() {
     setError("");
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
       });
-      if (!res.ok) {
+
+      if (!result || result.error) {
         setError(t("wrongCredentials"));
       } else {
         router.push("/chat");

@@ -9,13 +9,32 @@ export async function registerUser(
   password: string,
   name: string
 ): Promise<{ success: true }> {
-  const existing = await db.query.users.findFirst({ where: eq(users.email, email) });
-  if (existing) throw new Error("El email ya está registrado / Email already registered");
+  const existing = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, email.toLowerCase().trim()))
+    .get();
+
+  if (existing) {
+    throw new Error("El email ya está registrado / Email already registered");
+  }
+
   const passwordHash = await bcryptjs.hash(password, 12);
-  await db.insert(users).values({ id: randomUUID(), email, name, passwordHash });
+
+  await db.insert(users).values({
+    id: randomUUID(),
+    email: email.toLowerCase().trim(),
+    name: name.trim(),
+    passwordHash,
+  });
+
   return { success: true };
 }
 
 export async function getUserByEmail(email: string) {
-  return db.query.users.findFirst({ where: eq(users.email, email) });
+  return db
+    .select()
+    .from(users)
+    .where(eq(users.email, email.toLowerCase().trim()))
+    .get();
 }

@@ -1,32 +1,73 @@
-import { cookies } from "next/headers";
-import jwt, { type JwtPayload } from "jsonwebtoken";
+import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+import bcryptjs from "bcryptjs";
+import { z } from "zod";
 
-const TOKEN_NAME = "authjs.session-token";
+const credentialsSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
 
-interface AuthUser extends JwtPayload {
-  id: string;
-  email: string;
-  name?: string | null;
-}
+export const {
+  handlers: { GET, POST },
+  signIn,
+  signOut,
+  auth,
+} = NextAuth({
+  providers: [
+    Credentials({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      authorize: async (credentials) => {
+        const parsed = credentialsSchema.safeParse(credentials);
+        if (!parsed.success) return null;
 
-export async function auth(): Promise<{ user: AuthUser } | null> {
-  try {
-    const token = cookies().get(TOKEN_NAME)?.value;
-    if (!token) return null;
-    const payload = jwt.verify(token, process.env.NEXTAUTH_SECRET || "dev-secret-change-this");
-    if (typeof payload === "string" || !payload || typeof payload !== "object") return null;
-    return { user: payload as AuthUser };
-  } catch {
-    return null;
-  }
-}
+        const { email, password } = parsed.data;
 
-export async function signOut() {
-  // server action helper used by server components
-  const base = process.env.NEXTAUTH_URL || `http://localhost:${process.env.PORT || 3000}`;
-  const url = new URL("/api/auth/logout", base).toString();
-  await fetch(url, { method: "POST" });
-  return { ok: true };
-}
+        const user = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, email.toLowerCase().trim()))
+          .get();
 
-export default undefined;
+        if (!user) return null;
+        if (!user.passwordHash) return null;
+
+        const passwordMatch = await bcryptjs.compare(password, user.passwordHash);
+        if (!passwordMatch) return null;
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        };
+      },
+    }),
+  ],
+  session: { strategy: "jwt" },
+  pages: { signIn: "/login" },
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+      }
+      return token;
+    },
+    session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+      }
+      return session;
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+});
